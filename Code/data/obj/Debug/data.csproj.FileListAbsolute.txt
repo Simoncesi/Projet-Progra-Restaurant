@@ -1,6 +1,0 @@
-C:\Users\davea\source\repos\workshopBDD\data\bin\Debug\data.dll
-C:\Users\davea\source\repos\workshopBDD\data\bin\Debug\data.pdb
-C:\Users\davea\source\repos\workshopBDD\data\obj\Debug\data.csprojAssemblyReference.cache
-C:\Users\davea\source\repos\workshopBDD\data\obj\Debug\data.csproj.CoreCompileInputs.cache
-C:\Users\davea\source\repos\workshopBDD\data\obj\Debug\data.dll
-C:\Users\davea\source\repos\workshopBDD\data\obj\Debug\data.pdb
