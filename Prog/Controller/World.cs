@@ -8,5 +8,6 @@ namespace Controller
 {
     public class World
     {
+        float test = 0.54f;
     }
 }
