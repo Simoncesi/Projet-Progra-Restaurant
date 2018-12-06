@@ -1,0 +1,9 @@
+C:\Users\davea\source\repos\workshopBDD\middleware\bin\Debug\middleware.dll
+C:\Users\davea\source\repos\workshopBDD\middleware\bin\Debug\middleware.pdb
+C:\Users\davea\source\repos\workshopBDD\middleware\obj\Debug\middleware.csproj.CoreCompileInputs.cache
+C:\Users\davea\source\repos\workshopBDD\middleware\obj\Debug\middleware.dll
+C:\Users\davea\source\repos\workshopBDD\middleware\obj\Debug\middleware.pdb
+C:\Users\davea\source\repos\workshopBDD\middleware\bin\Debug\data.dll
+C:\Users\davea\source\repos\workshopBDD\middleware\bin\Debug\data.pdb
+C:\Users\davea\source\repos\workshopBDD\middleware\obj\Debug\middleware.csprojAssemblyReference.cache
+C:\Users\davea\source\repos\workshopBDD\middleware\obj\Debug\middleware.csproj.CopyComplete
