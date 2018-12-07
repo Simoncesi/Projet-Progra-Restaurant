@@ -10,3 +10,4 @@ C:\Users\davea\source\repos\WindowsFormsApp1\Prog\WindowsFormsApp1\obj\Debug\Win
 C:\Users\davea\source\repos\WindowsFormsApp1\Prog\WindowsFormsApp1\bin\Debug\Controller.dll
 C:\Users\davea\source\repos\WindowsFormsApp1\Prog\WindowsFormsApp1\bin\Debug\Controller.pdb
 C:\Users\davea\source\repos\WindowsFormsApp1\Prog\WindowsFormsApp1\obj\Debug\Vue.csproj.CopyComplete
+C:\Users\davea\source\repos\WindowsFormsApp1\Prog\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Vue1.resources

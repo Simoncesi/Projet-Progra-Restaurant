@@ -15,18 +15,39 @@ namespace WindowsFormsApp1
         public Vue1()
         {
             InitializeComponent();
+
             Controller.World test = new Controller.World(20, 20);
 
             Controller.Cuisine cuisine = test.InstantiateCuisine(5, 5, new int[] { 15, 15 });
-            Console.WriteLine(cuisine.GetType());
+            Console.WriteLine(test.GetTableEntity(new int[] { 16, 16 }).typeSalle);
 
             Controller.Loader loader = new Controller.Loader();
 
-            Controller.Entity test2 = new Controller.Entity(loader);
-            Controller.Entity test3 = new Controller.Entity(loader);
+            dataGridView1.Dock = DockStyle.Fill;
 
-            Console.WriteLine(test2.id);
-            Console.WriteLine(test3.id);
+            dataGridView1.AutoGenerateColumns = true;
+
+            FillDataGridView(test.GenerateGridView());
+        }
+
+        private void FillDataGridView(string[,] table)
+        {
+            dataGridView1.ColumnCount = table.GetLength(0);
+
+            for (int y = 0; y < table.GetLength(1); y++)
+            {
+                string[] row = new string[table.GetLength(0)];
+
+                for (int x = 0; x < table.GetLength(0); x++)
+                {
+                    row[x] = table[x, y];
+                }
+                dataGridView1.Rows.Add(row);
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
 
         }
     }

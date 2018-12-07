@@ -6,16 +6,23 @@ using System.Threading.Tasks;
 
 namespace Controller
 {
-    public class Entity
+    public abstract class Entity
     {
         public int id;
-        public int tt;
 
         public Entity(Loader loader)
         {
-            id = loader.GiveID();
+            this.id = loader.GiveID();
         }
     }
 
+    public abstract class PhysicalEntity: Entity
+    {
+        protected int[] position;
 
+        public PhysicalEntity(Loader loader, int[] position): base(loader)
+        {
+            this.position = position;
+        }
+    }
 }

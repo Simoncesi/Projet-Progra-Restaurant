@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="Entites.cs" />
     <Compile Include="Loader.cs" />
+    <Compile Include="Objets.cs" />
+    <Compile Include="Personnages.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

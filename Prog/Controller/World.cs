@@ -18,6 +18,13 @@ namespace Controller
             this.height = height;
 
             this.table = new TableEntity[width,height];
+
+            FillTable(table);
+        }
+
+        public TableEntity GetTableEntity(int[] position)
+        {
+            return table[position[0], position[1]];
         }
 
         public Cuisine InstantiateCuisine(int width, int height, int[] position)
@@ -46,13 +53,39 @@ namespace Controller
 
         private void SetSalle(int width, int height, int[] position, string typeSalle)
         {
-            for(int x = position[0]; x < width; x++)
+            for(int x = position[0]; x < (width + position[0]); x++)
             {
-                for (int y = position[1]; y < height; y++)
+                for (int y = position[1]; y < (height + position[1]); y++)
                 {
                     table[x, y].typeSalle = typeSalle;
                 }
             }
+        }
+
+        private void FillTable(TableEntity[,] table)
+        {
+            for (int x = 0; x < table.GetLength(0); x++)
+            {
+                for (int y = 0; y < table.GetLength(1); y++)
+                {
+                    table[x, y] = new TableEntity();
+                }
+            }
+        }
+
+        public string[,] GenerateGridView()
+        {
+            string[,] stringTable = new string[this.table.GetLength(0), this.table.GetLength(1)];
+
+            for (int x = 0; x < this.table.GetLength(0); x++)
+            {
+                for (int y = 0; y < this.table.GetLength(1); y++)
+                {
+                    stringTable[x, y] = GetTableEntity(new int[] { x, y }).typeSalle;
+                }
+            }
+
+            return stringTable;
         }
     }
 
