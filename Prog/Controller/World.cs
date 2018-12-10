@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Controller
 {
     public class World
@@ -12,43 +13,91 @@ namespace Controller
         protected int height;
         protected TableEntity[,] table;
 
+        private Core core;
+        private Loader loader;
+
+        private Cuisine cuisine;
+        private Restaurant restaurant;
+        private Hall hall;
+        private Comptoir comptoir;
+
         public World(int width, int height)
         {
             this.width = width;
             this.height = height;
+
+            this.core = new Core();
+            this.loader = new Loader(core, this);
 
             this.table = new TableEntity[width,height];
 
             FillTable(table);
         }
 
+        public Loader GetLoader()
+        {
+            return loader;
+        }
+
         public TableEntity GetTableEntity(int[] position)
         {
-            return table[position[0], position[1]];
+            if(position[0] < width && position[1] < height)
+            {
+                return table[position[0], position[1]];
+            }
+            else
+            {
+                return null;
+            }
+            
         }
 
         public Cuisine InstantiateCuisine(int width, int height, int[] position)
         {
             SetSalle(width, height, position, "Cuisine");
-            return new Cuisine(width, height, position, this);
+            cuisine = new Cuisine(width, height, position, this);
+            return cuisine;
         }
 
         public Restaurant InstantiateRestaurant(int width, int height, int[] position)
         {
             SetSalle(width, height, position, "Restaurant");
-            return new Restaurant(width, height, position, this);
+            restaurant = new Restaurant(width, height, position, this);
+            return restaurant;
         }
 
         public Comptoir InstantiateComptoir(int width, int height, int[] position)
         {
             SetSalle(width, height, position, "Comptoir");
-            return new Comptoir(width, height, position, this);
+            comptoir = new Comptoir(width, height, position, this);
+            return comptoir;
         }
 
         public Hall InstantiateHall(int width, int height, int[] position)
         {
             SetSalle(width, height, position, "Hall");
-            return new Hall(width, height, position, this);
+            hall = new Hall(width, height, position, this);
+            return hall;
+        }
+
+        public Cuisine getCuisine()
+        {
+            return cuisine;
+        }
+
+        public Restaurant getRestaurant()
+        {
+            return restaurant;
+        }
+
+        public Hall getHall()
+        {
+            return hall;
+        }
+
+        public Comptoir GetComptoir()
+        {
+            return comptoir;
         }
 
         private void SetSalle(int width, int height, int[] position, string typeSalle)
@@ -134,12 +183,50 @@ namespace Controller
 
     public class Restaurant : Salle
     {
+        private int tableIdCount;
+        private List<Table> tables;
 
         public Restaurant() { }
 
         public Restaurant(int width, int height, int[] position, World world) : base(width, height, position, world)
         {
+            tableIdCount = 0;
+            tables = new List<Table>();
+        }
 
+        public void GenerateTables(int[,] positions)
+        {
+            for(int i = 0; i < position.GetLength(0); i++)
+            {
+                if(positions[i,0] < width && positions[i,1] < height)
+                {
+                    Table table = new Table(world.GetLoader(), new int[] { position[0] + positions[i, 0], position[1] + positions[i, 1] }, tableIdCount, 10);
+                    world.GetTableEntity(new int[] { positions[i, 0], positions[i, 1] }).AddEntity(table);
+                    tables.Add(table);
+                    tableIdCount++;
+
+                    Console.WriteLine("Table générée à: "+ position[0] + positions[i, 0]+" , "+ position[1] + positions[i, 1]);
+                }
+            }
+        }
+
+        public List<Table> GetAllTables()
+        {
+            return tables;
+        }
+
+        public List<Table>GetEmptyTables()
+        {
+            List<Table> emptyTables = new List<Table>();
+
+            foreach(Table table in tables)
+            {
+                if(table.EstLibre())
+                {
+                    emptyTables.Add(table);
+                }
+            }
+            return emptyTables;
         }
     }
 
@@ -156,12 +243,25 @@ namespace Controller
 
     public class Hall : Salle
     {
-
         public Hall() { }
 
         public Hall(int width, int height, int[] position, World world) : base(width, height, position, world)
         {
 
+        }
+
+        public List<Client> GenerateClients(Loader loader)
+        {
+            Console.WriteLine("Génération de clients !");
+            Random rnd = new Random();
+            List<Client> clients = new List<Client>();
+
+            for(int i = 0; i < rnd.Next(1,4); i++)
+            {
+                clients.Add(new Client(rnd.Next(30, 100), rnd.Next(0, 10), "Jean", "Albert", rnd.Next(20, 80), this.position, loader));
+            }
+
+            return clients;
         }
     }
 

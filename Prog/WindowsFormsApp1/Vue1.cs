@@ -18,10 +18,18 @@ namespace WindowsFormsApp1
 
             Controller.World test = new Controller.World(20, 20);
 
-            Controller.Cuisine cuisine = test.InstantiateCuisine(5, 5, new int[] { 15, 15 });
-            Console.WriteLine(test.GetTableEntity(new int[] { 16, 16 }).typeSalle);
+            //Controller.Cuisine cuisine = test.InstantiateCuisine(5, 5, new int[] { 15, 15 });
+            //Console.WriteLine(test.GetTableEntity(new int[] { 16, 16 }).typeSalle);
 
-            Controller.Loader loader = new Controller.Loader();
+            //Controller.Client perso1 = new Controller.Client(0, 0, "Jean", "Roger", 20, new int[] { 0, 0 }, test.GetLoader());
+            //Controller.Client perso2 = new Controller.Client(0, 0, "Jean", "Roger", 20, new int[] { 0, 0 }, test.GetLoader());
+
+            test.InstantiateRestaurant(10, 10, new int[] { 0, 0 });
+            test.InstantiateHall(10, 10, new int[] { 10, 0 });
+
+
+            test.getRestaurant().GenerateTables(new int[,] { { 1, 1 }, { 2, 2 } });
+            Controller.MaitreHotel maitre = new Controller.MaitreHotel("Eugene", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader());
 
             dataGridView1.Dock = DockStyle.Fill;
 

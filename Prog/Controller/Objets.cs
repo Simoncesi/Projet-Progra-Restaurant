@@ -49,4 +49,83 @@ namespace Controller
             this.stockage = stockage;
         }
     }
+
+    public class Materiel: Objet
+    {
+        private bool propre;
+
+        public Materiel(Entity conteneur, Loader loader, bool propre = true) : base(conteneur, loader)
+        {
+            this.propre = propre;
+        }
+
+        public void Salir()
+        {
+            propre = false;
+        }
+
+        public void Nettoyer()
+        {
+            propre = true;
+        }
+
+        public bool GetProprete()
+        {
+            return propre;
+        }
+    }
+
+    public class Ustensile: Materiel
+    {
+        public string ustensileType;
+        public Ustensile(Entity conteneur, Loader loader, string ustensileType, bool propre = true) : base(conteneur, loader, propre)
+        {
+            this.ustensileType = ustensileType;
+        }
+    }
+
+    public class ObjetConteneur: Materiel
+    {
+        //If it can contain solids or liquids
+        public string contenuType;
+        public string type;
+        private List<Nourriture> contenuNourriture;
+
+        public ObjetConteneur(Entity conteneur, Loader loader, string type, bool propre = true, string contenuType = "Solid") : base(conteneur, loader, propre)
+        {
+            this.type = type;
+            this.contenuType = contenuType;
+            contenuNourriture = new List<Nourriture>();
+        }
+
+        public void AjouterContenu(Nourriture nourriture)
+        {
+            contenuNourriture.Add(nourriture);
+        }
+
+        public bool RetirerContenu(Nourriture nourriture)
+        {
+            return contenuNourriture.Remove(nourriture);
+        }
+
+        public List<Nourriture> GetContenu()
+        {
+            return contenuNourriture;
+        }
+    }
+
+    public class Plat: Objet
+    {
+        private ObjetConteneur platConteneur;
+        public int platId;
+        public string nomPlat;
+
+        public Plat(string nomPlat, int platId, ObjetConteneur platConteneur, Entity conteneur, Loader loader) : base(conteneur, loader)
+        {
+            this.nomPlat = nomPlat;
+            this.platId = platId;
+            this.platConteneur = platConteneur;
+        }
+    }
+
 }
