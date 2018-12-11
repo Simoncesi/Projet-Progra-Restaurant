@@ -16,11 +16,11 @@ namespace Controller
         }
     }
 
-    public abstract class PhysicalEntity: Entity
+    public abstract class PhysicalEntity : Entity
     {
         protected int[] position;
 
-        public PhysicalEntity(Loader loader, int[] position): base(loader)
+        public PhysicalEntity(Loader loader, int[] position) : base(loader)
         {
             this.position = position;
         }
@@ -31,7 +31,7 @@ namespace Controller
         }
     }
 
-    public abstract class Conteneur: PhysicalEntity
+    public abstract class Conteneur : PhysicalEntity
     {
         protected List<Object> contenu;
 
@@ -56,7 +56,7 @@ namespace Controller
         }
     }
 
-    public class Table: Conteneur
+    public class Table : Conteneur
     {
         private int numTable;
         private int places;
@@ -100,7 +100,7 @@ namespace Controller
 
         public bool Reserver()
         {
-            if(libre == false)
+            if (libre == false)
             {
                 return false;
             }
@@ -123,6 +123,19 @@ namespace Controller
                 libre = true;
                 return true;
             }
+        }
+
+        public int GetNumTable()
+        {
+            return numTable;
+        }
+    }
+
+    public class Stock: Conteneur
+    {
+        public Stock(Loader loader, int[] position) : base(loader, position)
+        {
+            
         }
     }
 }

@@ -128,4 +128,19 @@ namespace Controller
         }
     }
 
+    public class Carte: Objet
+    {
+        private List<List<String>> menus;
+
+        public Carte(Entity conteneur, Loader loader, List<List<String>> menus) : base(conteneur, loader)
+        {
+            this.menus = menus;
+        }
+
+        public List<List<String>> GetMenus()
+        {
+            return menus;
+        }
+    }
+
 }

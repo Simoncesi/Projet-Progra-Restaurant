@@ -26,10 +26,26 @@ namespace WindowsFormsApp1
 
             test.InstantiateRestaurant(10, 10, new int[] { 0, 0 });
             test.InstantiateHall(10, 10, new int[] { 10, 0 });
+            test.InstantiateComptoir(10, 0, new int[] { 0, 11 }, new int[] { 0, 0 }, new int[] { 0, 10 });
+
+            List<List<String>> menu = new List<List<string>>()
+            {
+                new List<String>{
+                    "entree1", "plat1", "dessert1"
+                },
+                new List<String>{
+                    "entree2", "plat2", "dessert2"
+                }
+            };
+
+            test.GetComptoir().LoadCarte(new Controller.Carte(test.GetComptoir().stockCartes, test.GetLoader(), menu));
 
 
             test.getRestaurant().GenerateTables(new int[,] { { 1, 1 }, { 2, 2 } });
             Controller.MaitreHotel maitre = new Controller.MaitreHotel("Eugene", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader());
+            Controller.ChefDeRang chefDeRang = new Controller.ChefDeRang("Robert", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader(), maitre);
+            Controller.ChefDeRang chefDeRang2 = new Controller.ChefDeRang("Jean", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader(), maitre);
+
 
             dataGridView1.Dock = DockStyle.Fill;
 

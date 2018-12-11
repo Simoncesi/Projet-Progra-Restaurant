@@ -66,10 +66,10 @@ namespace Controller
             return restaurant;
         }
 
-        public Comptoir InstantiateComptoir(int width, int height, int[] position)
+        public Comptoir InstantiateComptoir(int width, int height, int[] position, int[] pointAccesRestaurant, int[] pointAccesCuisine)
         {
             SetSalle(width, height, position, "Comptoir");
-            comptoir = new Comptoir(width, height, position, this);
+            comptoir = new Comptoir(width, height, position, this, pointAccesRestaurant, pointAccesCuisine);
             return comptoir;
         }
 
@@ -228,16 +228,86 @@ namespace Controller
             }
             return emptyTables;
         }
+
+        public List<Table>GetFilledTables()
+        {
+            List<Table> filledTables = new List<Table>();
+
+            foreach (Table table in tables)
+            {
+                if (table.GetPlacesLibres() < table.GetNombrePlaces())
+                {
+                    filledTables.Add(table);
+                }
+            }
+            return filledTables;
+        }
+
+        public List<Table>GetReservedTables()
+        {
+            List<Table> reservedTables = new List<Table>();
+
+            foreach (Table table in tables)
+            {
+                if (table.EstLibre() == false)
+                {
+                    reservedTables.Add(table);
+                }
+            }
+            return reservedTables;
+        }
     }
 
     public class Comptoir : Salle
     {
+        private int[] pointAccesRestaurant;
+        private int[] pointAccesCuisine;
+        private Carte carte;
+        public Stock stockCartes;
 
         public Comptoir() { }
 
-        public Comptoir(int width, int height, int[] position, World world) : base(width, height, position, world)
+        public Comptoir(int width, int height, int[] position, World world, int[] pointAccesRestaurant, int[] pointAccesCuisine) : base(width, height, position, world)
         {
+            stockCartes = new Stock(world.GetLoader(), position);
 
+            if(pointAccesRestaurant[0] < width && pointAccesRestaurant[1] < height)
+            {
+                this.pointAccesRestaurant = pointAccesRestaurant;
+            }
+            else
+            {
+                this.pointAccesRestaurant = new int[] { 0, 0 };
+            }
+
+            if (pointAccesCuisine[0] < width && pointAccesCuisine[1] < height)
+            {
+                this.pointAccesCuisine = pointAccesCuisine;
+            }
+            else
+            {
+                this.pointAccesCuisine = new int[] { 0, 0 };
+            }
+        }
+
+        public int[] GetPointAccesRestaurant()
+        {
+            return pointAccesRestaurant;
+        }
+
+        public int[] GetPointAccesCuisine()
+        {
+            return pointAccesCuisine;
+        }
+
+        public void LoadCarte(Carte carte)
+        {
+            this.carte = carte;
+        }
+
+        public Carte GetCarte()
+        {
+            return carte;
         }
     }
 
