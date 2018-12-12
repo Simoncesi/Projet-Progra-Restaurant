@@ -264,12 +264,14 @@ namespace Controller
         private int[] pointAccesCuisine;
         private Carte carte;
         public Stock stockCartes;
+        public Stock stockPlats;
 
         public Comptoir() { }
 
         public Comptoir(int width, int height, int[] position, World world, int[] pointAccesRestaurant, int[] pointAccesCuisine) : base(width, height, position, world)
         {
             stockCartes = new Stock(world.GetLoader(), position);
+            stockPlats = new Stock(world.GetLoader(), position);
 
             if(pointAccesRestaurant[0] < width && pointAccesRestaurant[1] < height)
             {
@@ -308,6 +310,40 @@ namespace Controller
         public Carte GetCarte()
         {
             return carte;
+        }
+
+        public Plat GetPlat(string plat)
+        {
+            List<Object> platsEnStock = stockPlats.GetContent();
+
+            foreach (Object objet in platsEnStock)
+            {
+                if (objet.GetType().ToString() == "Controller.Plat")
+                {
+                    if (((Plat)objet).nomPlat == plat)
+                    {
+                        return (Plat)objet;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public bool HasPlat(string plat)
+        {
+            List<Object> platsEnStock = stockPlats.GetContent();
+
+            foreach(Object objet in platsEnStock)
+            {
+                if(objet.GetType().ToString() == "Controller.Plat")
+                {
+                    if(((Plat)objet).nomPlat == plat)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 

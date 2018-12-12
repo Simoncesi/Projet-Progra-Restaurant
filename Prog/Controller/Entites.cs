@@ -50,9 +50,22 @@ namespace Controller
             contenu.Remove(objet);
         }
 
-        public List<Object> getContent()
+        public List<Object> GetContent()
         {
             return contenu;
+        }
+
+        public Object TakeContent(Object objet)
+        {
+            if(contenu.FindIndex(e => e == objet) > -1)
+            {
+                DelContent(objet);
+                return objet;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 
@@ -128,6 +141,11 @@ namespace Controller
         public int GetNumTable()
         {
             return numTable;
+        }
+
+        public List<Client> GetClients()
+        {
+            return clientsPresents;
         }
     }
 
