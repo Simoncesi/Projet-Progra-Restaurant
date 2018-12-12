@@ -55,6 +55,11 @@ namespace Controller
             return contenu;
         }
 
+        public Object FindContent(Predicate<Object> condition)
+        {
+            return contenu.Find(condition);
+        }
+
         public Object TakeContent(Object objet)
         {
             if(contenu.FindIndex(e => e == objet) > -1)
@@ -75,6 +80,8 @@ namespace Controller
         private int places;
         private List<Client> clientsPresents;
         private bool libre;
+        public bool commisReservee;
+        public bool serveurReservee;
 
 
         public Table(Loader loader, int[] position, int numTable, int places) : base(loader, position)

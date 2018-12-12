@@ -11,7 +11,7 @@ namespace Controller
         public string nom;
         public string prenom;
         public int age;
-        protected List<Objet> inventaire;
+        protected List<Object> inventaire;
         protected Loader loader;
 
         public abstract void UpdatePersonnage(int delta);
@@ -25,7 +25,7 @@ namespace Controller
             this.prenom = prenom;
             this.age = age;
 
-            this.inventaire = new List<Objet>();
+            this.inventaire = new List<Object>();
         }
 
         public bool MoveTo(int[] position)
@@ -55,6 +55,7 @@ namespace Controller
         private List<String> menuChoisi;
         private string repasEtape;
         private int attenteCountDown;
+        private Plat plat;
 
         public Client(int argent, int attente, string nom, string prenom, int age, int[] position, Loader loader) :base(nom, prenom, age, position, loader)
         {
@@ -102,7 +103,6 @@ namespace Controller
                         Random rnd = new Random();
                         menuChoisi = carte.GetMenus()[rnd.Next(0, carte.GetMenus().Count())];
                         attenteCountDown = rnd.Next(1, 3) * attente;
-                        Console.WriteLine("Le client " + id + " a choisis le menus " + menuChoisi[0] + " " + menuChoisi[1] + " " + menuChoisi[2]);
                     }
                     else
                     {
@@ -112,6 +112,7 @@ namespace Controller
                         }
                         else
                         {
+                            Console.WriteLine("Le client " + id + " a choisis le menus " + menuChoisi[0] + " " + menuChoisi[1] + " " + menuChoisi[2]);
                             etat = "menuChoisi";
                         }
                     }
@@ -125,9 +126,28 @@ namespace Controller
                     break;
 
                 case "mange":
+
+                    if(attenteCountDown > 0)
+                    {
+                        attenteCountDown--;
+                    }
+                    else
+                    {
+                        FinisPlat();
+                    }
+
                     break;
 
                 case "part":
+
+                    QuitterTable();
+
+                    break;
+
+                case "paye":
+
+                    Payer();
+
                     break;
             }
         }
@@ -206,6 +226,67 @@ namespace Controller
                     return menuChoisi[2];
             }
             return null;
+        }
+
+        public void RecevoirPlat(Plat plat)
+        {
+            Console.WriteLine("Client " + id + " a reçus " + plat.nomPlat);
+
+            this.plat = plat;
+            Random rnd = new Random();
+            attenteCountDown = rnd.Next(5, 10) * attente;
+            etat = "mange";
+        }
+
+        private void FinisPlat()
+        {
+            plat = null;
+
+            Console.WriteLine("Client " + id + " a finis " + repasEtape);
+            
+            if(GetRepasEtape() == "Dessert")
+            {
+                etat = "part";
+            }
+            else
+            {
+                if(GetRepasEtape() == "Entree")
+                {
+                    repasEtape = "Plat";
+                }
+                else
+                {
+                    repasEtape = "Dessert";
+                }
+                etat = "attendsRepas";
+            }
+        }
+
+        private void QuitterTable()
+        {
+            bool tousClientsFinis = true;
+            foreach(Client client in table.GetClients())
+            {
+                if(client.etat != "part")
+                {
+                    tousClientsFinis = false;
+                }
+            }
+
+            if(tousClientsFinis)
+            {
+                Console.WriteLine("Client " + id + " s'en va");
+                table.RetirerClient(this);
+                MoveTo(maitre.GetPosition());
+                etat = "paye";
+            }
+        }
+
+        private void Payer()
+        {
+            maitre.QuitClient(this);
+
+            loader.GetCore().DelPersonnage(this);
         }
     }
 
@@ -300,6 +381,14 @@ namespace Controller
             Console.WriteLine("MH " + id + " alerte CR " + chefsDeRang[0].id + " pour reçevoir clients pour table " + table.GetNumTable());
             return false;
         }
+
+        public void QuitClient(Client client)
+        {
+            if(client.table.GetPlacesLibres() == client.table.GetNombrePlaces())
+            {
+                client.table.Liberer();
+            }
+        }
     }
 
     public class Serveur : PersonnelSalle
@@ -307,6 +396,7 @@ namespace Controller
         private string etat;
         private Comptoir comptoir;
         private Table targetTable;
+        private bool hasPlats;
 
         public Serveur(string nom, string prenom, int age, int[] position, Loader loader) : base(nom, prenom, age, position, loader)
         {
@@ -320,29 +410,7 @@ namespace Controller
             {
                 case "idle":
 
-                    List<Table> tablesCorrespondent = CheckTablesClientsEtat("attendsRepas");
-
-                    if (tablesCorrespondent.Count() > 0)
-                    {
-                        foreach(Table table in tablesCorrespondent)
-                        {
-                            bool platsPrets = true;
-                            foreach (Client client in table.GetClients())
-                            {
-                                if(comptoir.HasPlat(client.GetPlatAttente()) == false)
-                                {
-                                    platsPrets = false;
-                                }
-                            }
-
-                            if(platsPrets)
-                            {
-                                targetTable = table;
-                                etat = "apportePlat";
-                                break;
-                            }
-                        }
-                    }
+                    CheckPlatsClients();
 
                     break;
 
@@ -350,6 +418,43 @@ namespace Controller
                     break;
 
                 case "apportePlat":
+
+                    if (hasPlats == false)
+                    {
+                        if (GetPosition() != comptoir.GetPointAccesRestaurant())
+                        {
+                            MoveTo(comptoir.GetPointAccesRestaurant());
+                        }
+                        else
+                        {
+                            Console.WriteLine("Serveur " + id + "a prit plats pour table " + targetTable.GetNumTable());
+                            foreach(Client client in targetTable.GetClients())
+                            {
+                                inventaire.Add(comptoir.stockPlats.TakeContent(comptoir.stockPlats.FindContent(new Predicate<object>(o => ((Plat)o).nomPlat == client.GetPlatAttente()))));
+                            }
+                            hasPlats = true;
+                        }
+                    }
+                    else
+                    {
+                        if (GetPosition() != targetTable.GetPosition())
+                        {
+                            MoveTo(targetTable.GetPosition());
+                        }
+                        else
+                        {
+                            foreach (Client client in targetTable.GetClients())
+                            {
+                                Plat plat = (Plat)inventaire.Find(o => ((Plat)o).nomPlat == client.GetPlatAttente());
+                                inventaire.Remove(plat);
+                                client.RecevoirPlat(plat);
+                            }
+                            targetTable.serveurReservee = false;
+                            targetTable = null;
+                            hasPlats = false;
+                            etat = "idle";
+                        }
+                    }
                     break;
 
                 case "debarasseRepas":
@@ -382,30 +487,59 @@ namespace Controller
             return tablesCorrespondent;
         }
 
+        private void CheckPlatsClients()
+        {
+            List<Table> tablesCorrespondent = CheckTablesClientsEtat("attendsRepas");
+
+            if (tablesCorrespondent.Count() > 0)
+            {
+                foreach (Table table in tablesCorrespondent)
+                {
+                    bool platsPrets = true;
+                    foreach (Client client in table.GetClients())
+                    {
+                        if (comptoir.HasPlat(client.GetPlatAttente()) == false)
+                        {
+                            platsPrets = false;
+                        }
+                    }
+
+                    if (platsPrets)
+                    {
+                        if(table.serveurReservee == false)
+                        {
+                            table.serveurReservee = true;
+                            targetTable = table;
+                            etat = "apportePlat";
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
     }
 
     public class ChefDeRang : PersonnelSalle
     {
         private string etat;
         private List<Object[]> clientsToRecieve;
-        private List<Object[]> clientsChoosingMenus;
-        private List<Object[]> clientsWaitingFood;
         private int attenteClients;
         private int[] tablePosition;
         private Carte carte;
         private MaitreHotel maitre;
         private Table tableCiblee;
+        private List<List<String>> commandes;
 
         public ChefDeRang(string nom, string prenom, int age, int[] position, Loader loader, MaitreHotel maitreHotel) : base(nom, prenom, age, position, loader)
         {
             etat = "idle";
             clientsToRecieve = new List<Object[]>();
-            clientsChoosingMenus = new List<Object[]>();
-            clientsWaitingFood = new List<Object[]>();
             tablePosition = new int[2];
             carte = null;
             this.maitre = maitreHotel;
             maitre.AddChefDeRang(this);
+            commandes = new List<List<String>>();
         }
 
         public override void UpdatePersonnage(int delta)
@@ -424,17 +558,18 @@ namespace Controller
 
                         if(tablesCorrespondent.Count() > 0)
                         {
-                            etat = "prendCommande";
-                            tableCiblee = tablesCorrespondent[0];
-                            MoveTo(tableCiblee.GetPosition());
-                            break;
-                        }
-
-                        tablesCorrespondent = CheckTablesClientsEtat("attendsRepas");
-
-                        if(tablesCorrespondent.Count() > 0)
-                        {
-
+                            foreach(Table table in tablesCorrespondent)
+                            {
+                                if (table.commisReservee == false)
+                                {
+                                    Console.WriteLine("CR " + id + " récupère une commande à table " + tablesCorrespondent[0].GetNumTable());
+                                    table.commisReservee = true;
+                                    etat = "prendCommande";
+                                    tableCiblee = table;
+                                    MoveTo(tableCiblee.GetPosition());
+                                    break;
+                                }
+                            }
                         }
                     }
 
@@ -452,6 +587,18 @@ namespace Controller
 
                 case "prendCommande":
                     GettingCommande(tableCiblee);
+                    break;
+
+                case "deposeCommande":
+
+                    if(GetPosition() != loader.GetWorld().GetComptoir().GetPointAccesRestaurant())
+                    {
+                        MoveTo(loader.GetWorld().GetComptoir().GetPointAccesRestaurant());
+                    }
+                    else
+                    {
+                        GivingCommandeKitchen();
+                    }
                     break;
 
                 case "apporteCouverts":
@@ -525,7 +672,6 @@ namespace Controller
 
                     Console.WriteLine("CR " + id + " a donné les cartes aux clients de la table " + ((Table)clientsToRecieve[0][1]).GetNumTable());
 
-                    clientsChoosingMenus.Add(clientsToRecieve[0]);
                     clientsToRecieve.RemoveAt(0);
 
                     carte = null;
@@ -569,12 +715,21 @@ namespace Controller
 
         private void GettingCommande(Table table)
         {
-            List<List<String>> commandes = new List<List<string>>();
-
             foreach(Client client in table.GetClients())
             {
                 commandes.Add(client.DonnerMenu());
             }
+
+            tableCiblee.commisReservee = false;
+            tableCiblee = null;
+            etat = "deposeCommande";
+        }
+
+        private void GivingCommandeKitchen()
+        {
+            Console.WriteLine("CR " + id + " a déposé une commande à la cuisine");
+            loader.GetWorld().GetComptoir().AddCommande(commandes);
+            etat = "idle";
         }
 
         private List<Table> CheckTablesClientsEtat(string etatToCheck)

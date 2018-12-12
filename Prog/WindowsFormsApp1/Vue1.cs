@@ -46,6 +46,10 @@ namespace WindowsFormsApp1
             Controller.ChefDeRang chefDeRang = new Controller.ChefDeRang("Robert", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader(), maitre);
             Controller.ChefDeRang chefDeRang2 = new Controller.ChefDeRang("Jean", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader(), maitre);
 
+            Controller.Serveur serveur = new Controller.Serveur("Albert", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader());
+            Controller.Serveur serveur2 = new Controller.Serveur("Paul", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader());
+
+
 
             dataGridView1.Dock = DockStyle.Fill;
 

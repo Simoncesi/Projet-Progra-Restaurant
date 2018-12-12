@@ -265,6 +265,7 @@ namespace Controller
         private Carte carte;
         public Stock stockCartes;
         public Stock stockPlats;
+        public Stock stockCommandes;
 
         public Comptoir() { }
 
@@ -272,8 +273,10 @@ namespace Controller
         {
             stockCartes = new Stock(world.GetLoader(), position);
             stockPlats = new Stock(world.GetLoader(), position);
+            stockCommandes = new Stock(world.GetLoader(), position);
 
-            if(pointAccesRestaurant[0] < width && pointAccesRestaurant[1] < height)
+
+            if (pointAccesRestaurant[0] < width && pointAccesRestaurant[1] < height)
             {
                 this.pointAccesRestaurant = pointAccesRestaurant;
             }
@@ -344,6 +347,26 @@ namespace Controller
                 }
             }
             return false;
+        }
+
+        public void AddCommande(List<List<String>> commande)
+        {
+            stockCommandes.AddContent(commande);
+            GeneratePlat();
+        }
+
+        public void GeneratePlat()
+        {
+            foreach(List<List<String>> commandeListe in stockCommandes.GetContent())
+            {
+                foreach(List<String> commande in commandeListe)
+                {
+                    foreach(String plat in commande)
+                    {
+                        stockPlats.AddContent(new Plat(plat, 0, new ObjetConteneur(stockPlats, world.GetLoader(), "assiette"), stockPlats, world.GetLoader()));
+                    }
+                }
+            }
         }
     }
 
