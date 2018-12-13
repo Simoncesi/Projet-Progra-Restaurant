@@ -30,9 +30,12 @@ namespace Controller
             int inc = 0;
             int xinc = 0;
 
-            for(int i = 0; i < nbreTables; i++)
+            Console.WriteLine(restaurant[0]);
+
+            for (int i = 0; i < nbreTables; i++)
             {
-                if(xinc < restaurant[0])
+                Console.WriteLine(i);
+                if (xinc < restaurant[0])
                 {
                     tablesCoords.Add(new int[] { xinc, inc });
                 }
@@ -45,15 +48,7 @@ namespace Controller
                 xinc++;
             }
 
-            int[,] tabTablesCoords = new int[2, tablesCoords.Count()];
-
-            for(int i = 0; i < tablesCoords.Count(); i++)
-            {
-                tabTablesCoords[0, i] = tablesCoords[0][0];
-                tabTablesCoords[1, i] = tablesCoords[0][1];
-            }
-
-            world.getRestaurant().GenerateTables(tabTablesCoords);
+            world.getRestaurant().GenerateTables(tablesCoords);
 
             world.GetComptoir().LoadCarte(new Carte(world.GetComptoir().stockCartes, world.GetLoader(), menu));
 

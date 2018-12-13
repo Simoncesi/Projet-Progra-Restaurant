@@ -164,12 +164,24 @@ namespace Controller
             List<Object> entities = GetTableEntity(restaurant.GetTable(tableId).GetPosition()).GetAllEntities();
             List<String[]> formatEntites = new List<String[]>();
 
+            //Console.WriteLine(restaurant.GetTable(tableId).GetPosition()[0]+" "+ restaurant.GetTable(tableId).GetPosition()[1]);
             foreach(Entity entite in entities)
             {
-                formatEntites.Add(new string[]{ entite.GetType() + " " + entite.id, entite.id.ToString()});
+                //Console.WriteLine(entite.GetType());
+                formatEntites.Add(new string[]{ entite.GetType().ToString().Replace("Controller.", "") + " " + entite.id, entite.id.ToString()});
             }
 
             return formatEntites;
+        }
+
+        public void SetSpeedUp(bool speed)
+        {
+            core.SetSpeed(speed);
+        }
+
+        public void SetPause(bool pause)
+        {
+            core.Pause(pause);
         }
     }
 
@@ -228,18 +240,18 @@ namespace Controller
             tables = new List<Table>();
         }
 
-        public void GenerateTables(int[,] positions)
+        public void GenerateTables(List<int[]> positions)
         {
-            for(int i = 0; i < position.GetLength(0); i++)
+            foreach(int[] pos in positions)
             {
-                if(positions[i,0] < width && positions[i,1] < height)
+                if(pos[0] < width && pos[1] < height)
                 {
-                    Table table = new Table(world.GetLoader(), new int[] { position[0] + positions[i, 0], position[1] + positions[i, 1] }, tableIdCount, 10);
-                    world.GetTableEntity(new int[] { positions[i, 0], positions[i, 1] }).AddEntity(table);
+                    Table table = new Table(world.GetLoader(), new int[] { pos[0] + position[0], pos[1] + position[1] }, tableIdCount, 10);
+                    world.GetTableEntity(table.GetPosition()).AddEntity(table);
                     tables.Add(table);
                     tableIdCount++;
 
-                    Console.WriteLine("Table générée à: "+ position[0] + positions[i, 0]+" , "+ position[1] + positions[i, 1]);
+                    Console.WriteLine("Table générée à: "+ table.GetPosition()[0] + " , "+ table.GetPosition()[1]);
                 }
             }
         }

@@ -94,6 +94,18 @@ namespace Controller
                 personnage.UpdatePersonnage(timeElapsed);
             }
         }
+
+        public void SetSpeed(bool speedUp)
+        {
+            if(speedUp == true)
+            {
+                aTimer.Interval = 100;
+            }
+            else
+            {
+                aTimer.Interval = 1000;
+            }
+        }
     }
 
 }

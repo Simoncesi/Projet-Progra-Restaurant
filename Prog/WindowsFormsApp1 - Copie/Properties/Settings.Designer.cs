@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Vue.Properties
+namespace WindowsFormsApp1.Properties
 {
 
 

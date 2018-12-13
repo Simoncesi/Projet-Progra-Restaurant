@@ -493,7 +493,7 @@ namespace Controller
 
             infosToReturn.Add(new string[] { "ID", id.ToString() });
             infosToReturn.Add(new string[] { "Etat", etat });
-            infosToReturn.Add(new string[] { "Table ciblée", targetTable.GetNumTable().ToString() });
+            //infosToReturn.Add(new string[] { "Table ciblée", targetTable.GetNumTable().ToString() });
             infosToReturn.Add(new string[] { "A des plats", hasPlats.ToString() });
 
             return infosToReturn;
