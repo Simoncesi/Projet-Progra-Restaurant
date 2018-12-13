@@ -16,40 +16,7 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
 
-            Controller.World test = new Controller.World(20, 20);
-
-            //Controller.Cuisine cuisine = test.InstantiateCuisine(5, 5, new int[] { 15, 15 });
-            //Console.WriteLine(test.GetTableEntity(new int[] { 16, 16 }).typeSalle);
-
-            //Controller.Client perso1 = new Controller.Client(0, 0, "Jean", "Roger", 20, new int[] { 0, 0 }, test.GetLoader());
-            //Controller.Client perso2 = new Controller.Client(0, 0, "Jean", "Roger", 20, new int[] { 0, 0 }, test.GetLoader());
-
-            test.InstantiateRestaurant(10, 10, new int[] { 0, 0 });
-            test.InstantiateHall(10, 10, new int[] { 10, 0 });
-            test.InstantiateComptoir(10, 0, new int[] { 0, 11 }, new int[] { 0, 0 }, new int[] { 0, 10 });
-
-            List<List<String>> menu = new List<List<string>>()
-            {
-                new List<String>{
-                    "entree1", "plat1", "dessert1"
-                },
-                new List<String>{
-                    "entree2", "plat2", "dessert2"
-                }
-            };
-
-            test.GetComptoir().LoadCarte(new Controller.Carte(test.GetComptoir().stockCartes, test.GetLoader(), menu));
-
-
-            test.getRestaurant().GenerateTables(new int[,] { { 1, 1 }, { 2, 2 } });
-            Controller.MaitreHotel maitre = new Controller.MaitreHotel("Eugene", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader());
-            Controller.ChefDeRang chefDeRang = new Controller.ChefDeRang("Robert", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader(), maitre);
-            Controller.ChefDeRang chefDeRang2 = new Controller.ChefDeRang("Jean", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader(), maitre);
-
-            Controller.Serveur serveur = new Controller.Serveur("Albert", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader());
-            Controller.Serveur serveur2 = new Controller.Serveur("Paul", "Baskiez", 60, new int[] { 15, 15 }, test.GetLoader());
-
-
+            Controller.World test = (new Controller.Controller()).LoadWorld(new int[] { 20, 20 }, new int[] { 10, 10, 0, 0 }, new int[] { 10, 10, 0, 10, 10, 10, 10, 10, 10 }, new int[] { 10, 10, 10, 0 }, 5, 2, 2);
 
             dataGridView1.Dock = DockStyle.Fill;
 

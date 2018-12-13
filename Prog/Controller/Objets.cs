@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Controller
 {
-    public class Objet: Entity
+    public abstract class Objet: Entity
     {
         private Entity conteneur;
 
@@ -36,6 +36,17 @@ namespace Controller
             this.type = type;
             this.quantity = quantity;
         }
+
+        public override List<string[]> ReturnInformations()
+        {
+            List<string[]> infosToReturn = new List<string[]>();
+
+            infosToReturn.Add(new string[] { "ID", id.ToString() });
+            infosToReturn.Add(new string[] { "Type", type });
+            infosToReturn.Add(new string[] { "Quantité", quantity.ToString() });
+
+            return infosToReturn;
+        }
     }
 
     public class Nourriture: Objet
@@ -48,6 +59,17 @@ namespace Controller
             this.nom = nom;
             this.stockage = stockage;
         }
+
+        public override List<string[]> ReturnInformations()
+        {
+            List<string[]> infosToReturn = new List<string[]>();
+
+            infosToReturn.Add(new string[] { "ID", id.ToString() });
+            infosToReturn.Add(new string[] { "Nom", nom });
+            infosToReturn.Add(new string[] { "Stockage", stockage });
+
+            return infosToReturn;
+        }
     }
 
     public class Materiel: Objet
@@ -57,6 +79,16 @@ namespace Controller
         public Materiel(Entity conteneur, Loader loader, bool propre = true) : base(conteneur, loader)
         {
             this.propre = propre;
+        }
+
+        public override List<string[]> ReturnInformations()
+        {
+            List<string[]> infosToReturn = new List<string[]>();
+
+            infosToReturn.Add(new string[] { "ID", id.ToString() });
+            infosToReturn.Add(new string[] { "Propre", propre.ToString() });
+
+            return infosToReturn;
         }
 
         public void Salir()
@@ -126,6 +158,16 @@ namespace Controller
             this.platId = platId;
             this.platConteneur = platConteneur;
         }
+
+        public override List<string[]> ReturnInformations()
+        {
+            List<string[]> infosToReturn = new List<string[]>();
+
+            infosToReturn.Add(new string[] { "ID", id.ToString() });
+            infosToReturn.Add(new string[] { "Plat", nomPlat });
+
+            return infosToReturn;
+        }
     }
 
     public class Carte: Objet
@@ -135,6 +177,23 @@ namespace Controller
         public Carte(Entity conteneur, Loader loader, List<List<String>> menus) : base(conteneur, loader)
         {
             this.menus = menus;
+        }
+
+        public override List<string[]> ReturnInformations()
+        {
+            List<string[]> infosToReturn = new List<string[]>();
+
+            infosToReturn.Add(new string[] { "ID", id.ToString() });
+
+            int i = 0;
+
+            foreach(List<String> menu in menus)
+            {
+                i++;
+                infosToReturn.Add(new string[] { "Menu "+i, menu[0]+" "+menu[1]+" "+menu[2] });
+            }
+
+            return infosToReturn;
         }
 
         public List<List<String>> GetMenus()

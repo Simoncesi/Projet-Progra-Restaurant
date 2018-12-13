@@ -152,6 +152,21 @@ namespace Controller
             }
         }
 
+        public override List<string[]> ReturnInformations()
+        {
+            List<string[]> infosToReturn = new List<string[]>();
+
+            infosToReturn.Add(new string[] { "ID", id.ToString() });
+            infosToReturn.Add(new string[] { "Etat", etat });
+            infosToReturn.Add(new string[] { "Modificateur de temps", attente.ToString() });
+            infosToReturn.Add(new string[] { "Table donnée", tableDonnee.ToString() });
+            infosToReturn.Add(new string[] { "Menu choisi", menuChoisi[0]+" "+menuChoisi[1]+" "+menuChoisi[2] });
+            infosToReturn.Add(new string[] { "Etape du repas", repasEtape });
+            infosToReturn.Add(new string[] { "Countdown attente", attenteCountDown.ToString() });
+
+            return infosToReturn;
+        }
+
         public void RecevoirTable(Table table)
         {
             this.table = table;
@@ -340,6 +355,16 @@ namespace Controller
             }
         }
 
+        public override List<string[]> ReturnInformations()
+        {
+            List<string[]> infosToReturn = new List<string[]>();
+
+            infosToReturn.Add(new string[] { "ID", id.ToString() });
+            infosToReturn.Add(new string[] { "Clients en attente", clientsAttente.Count().ToString() });
+
+            return infosToReturn;
+        }
+
         public void AddChefDeRang(ChefDeRang chefDeRang)
         {
             chefsDeRang.Add(chefDeRang);
@@ -460,6 +485,18 @@ namespace Controller
                 case "debarasseRepas":
                     break;
             }
+        }
+
+        public override List<string[]> ReturnInformations()
+        {
+            List<string[]> infosToReturn = new List<string[]>();
+
+            infosToReturn.Add(new string[] { "ID", id.ToString() });
+            infosToReturn.Add(new string[] { "Etat", etat });
+            infosToReturn.Add(new string[] { "Table ciblée", targetTable.GetNumTable().ToString() });
+            infosToReturn.Add(new string[] { "A des plats", hasPlats.ToString() });
+
+            return infosToReturn;
         }
 
         private List<Table> CheckTablesClientsEtat(string etatToCheck)
@@ -605,6 +642,16 @@ namespace Controller
 
                     break;
             }
+        }
+
+        public override List<string[]> ReturnInformations()
+        {
+            List<string[]> infosToReturn = new List<string[]>();
+
+            infosToReturn.Add(new string[] { "ID", id.ToString() });
+            infosToReturn.Add(new string[] { "Etat", etat });
+
+            return infosToReturn;
         }
 
         private void WaitingClients()

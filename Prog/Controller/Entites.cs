@@ -14,6 +14,8 @@ namespace Controller
         {
             this.id = loader.GiveID();
         }
+
+        public abstract List<string[]> ReturnInformations();
     }
 
     public abstract class PhysicalEntity : Entity
@@ -92,6 +94,19 @@ namespace Controller
             this.places = places;
         }
 
+        public override List<string[]> ReturnInformations()
+        {
+            List<string[]> infosToReturn = new List<string[]>();
+
+            infosToReturn.Add(new string[] { "ID", id.ToString() });
+            infosToReturn.Add(new string[] { "Numéro table", numTable.ToString() });
+            infosToReturn.Add(new string[] { "Places", places.ToString() });
+            infosToReturn.Add(new string[] { "Places libres", GetPlacesLibres().ToString() });
+            infosToReturn.Add(new string[] { "Places occupées", clientsPresents.Count().ToString() });
+
+            return infosToReturn;
+        }
+
         public int GetNombrePlaces()
         {
             return places;
@@ -161,6 +176,16 @@ namespace Controller
         public Stock(Loader loader, int[] position) : base(loader, position)
         {
             
+        }
+
+        public override List<string[]> ReturnInformations()
+        {
+            List<string[]> infosToReturn = new List<string[]>();
+
+            infosToReturn.Add(new string[] { "ID", id.ToString() });
+            infosToReturn.Add(new string[] { "Items", contenu.Count().ToString() });
+
+            return infosToReturn;
         }
     }
 }

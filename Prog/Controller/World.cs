@@ -136,8 +136,42 @@ namespace Controller
 
             return stringTable;
         }
-    }
 
+        public List<string[]> GenerateInfosElement(int id)
+        {
+            return FindElementInWorld(id).ReturnInformations();
+        }
+
+        public Entity FindElementInWorld(int id)
+        {
+            for(int i = 0; i < width;i++)
+            {
+                for (int j = 0; i < height; i++)
+                {
+                    TableEntity tablentity = GetTableEntity(new int[] { i, j });
+
+                    if(tablentity.HasEntity(id))
+                    {
+                        return tablentity.GetEntity(id);
+                    }
+                }
+            }
+            return null;
+        }
+
+        public List<String[]> GetTableContent(int tableId)
+        {
+            List<Object> entities = GetTableEntity(restaurant.GetTable(tableId).GetPosition()).GetAllEntities();
+            List<String[]> formatEntites = new List<String[]>();
+
+            foreach(Entity entite in entities)
+            {
+                formatEntites.Add(new string[]{ entite.GetType() + " " + entite.id, entite.id.ToString()});
+            }
+
+            return formatEntites;
+        }
+    }
 
     public abstract class Salle
     {
@@ -255,6 +289,11 @@ namespace Controller
                 }
             }
             return reservedTables;
+        }
+
+        public Table GetTable(int tableId)
+        {
+            return tables.Find(t => t.GetNumTable() == tableId);
         }
     }
 
@@ -397,14 +436,14 @@ namespace Controller
     public class TableEntity
     {
         public string typeSalle;
-        private List<Entity> entities;
+        private List<Object> entities;
 
         public TableEntity()
         {
-            entities = new List<Entity>();
+            entities = new List<Object>();
         }
 
-        public List<Entity> GetAllEntities()
+        public List<Object> GetAllEntities()
         {
             return entities;
         }
@@ -419,14 +458,14 @@ namespace Controller
             return entities.Remove(entity);
         }
 
-        public List<Entity> FindEntityByType(string type)
+        public List<Object> FindEntityByType(string type)
         {
-            return entities.FindAll(e => e.GetType().ToString() == type);
+            return entities.FindAll(e => ((Entity)e).GetType().ToString() == type);
         }
 
         public bool HasEntity(int entityID)
         {
-            int result = entities.FindIndex(e => e.id == entityID);
+            int result = entities.FindIndex(e => ((Entity)e).id == entityID);
 
             if(result > -1)
             {
@@ -436,6 +475,11 @@ namespace Controller
             {
                 return false;
             }
+        }
+
+        public Entity GetEntity(int id)
+        {
+            return (Entity)entities.Find(e => ((Entity)e).id == id);
         }
     }
 
