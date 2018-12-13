@@ -41,6 +41,7 @@ namespace Controller
         private List<Personnage> personnages;
         private System.Timers.Timer aTimer;
         private int timeElapsed;
+        private Delegate refreshCaller;
 
         public Core()
         {
@@ -93,6 +94,11 @@ namespace Controller
             {
                 personnage.UpdatePersonnage(timeElapsed);
             }
+
+            if(refreshCaller != null)
+            {
+                refreshCaller.DynamicInvoke();
+            }
         }
 
         public void SetSpeed(bool speedUp)
@@ -105,6 +111,11 @@ namespace Controller
             {
                 aTimer.Interval = 1000;
             }
+        }
+
+        public void setDeleg(Delegate deleg)
+        {
+            refreshCaller = deleg;
         }
     }
 

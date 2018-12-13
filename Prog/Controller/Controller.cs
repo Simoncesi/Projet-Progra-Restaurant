@@ -8,9 +8,11 @@ namespace Controller
 {
     public class Controller
     {
-        public World LoadWorld(int[] worldSize, int[] restaurant, int[] comptoir, int[] hall, int nbreTables, int nbreCR, int nbreServ)
+        public World LoadWorld(int[] worldSize, int[] restaurant, int[] comptoir, int[] hall, int nbreTables, int nbreCR, int nbreServ, Delegate deleg)
         {
+
             World world = new World(20, 20);
+            world.GetCore().setDeleg(deleg);
 
             world.InstantiateRestaurant(restaurant[0], restaurant[1], new int[] { restaurant[2], restaurant[3] });
             world.InstantiateHall(hall[0], hall[1], new int[] { hall[2], hall[3] });

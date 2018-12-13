@@ -65,22 +65,22 @@ namespace Vue
 
         private Controller.World world;
         private int lastUsedTag = 0;
+        private string lastGeneratedButtonTag = "";
         private bool speedUp = false;
         private bool pause = false;
+        private delegate void refreshPointer();
 
 
         public form()
         {
             InitializeComponent();
 
-            world = (new Controller.Controller()).LoadWorld(new int[] { 20, 20 }, new int[] { 10, 10, 0, 0 }, new int[] { 10, 10, 0, 10, 10, 10, 10, 10, 10 }, new int[] { 10, 10, 10, 0 }, 5, 2, 2);
+            refreshPointer pointer = new refreshPointer(RefreshAllEvent);
+
+            world = (new Controller.Controller()).LoadWorld(new int[] { 20, 20 }, new int[] { 10, 10, 0, 0 }, new int[] { 10, 10, 0, 10, 10, 10, 10, 10, 10 }, new int[] { 10, 10, 10, 0 }, 5, 2, 2, pointer);
 
             //label1.Text = "coucou";
             label1.Text = "";
-
-
-
-
         }
 
         private void InitializeComponent()
@@ -619,6 +619,8 @@ namespace Vue
             //boucle pour générer les boutons
             tableLayoutPanel2.Controls.Clear();
 
+            bool stillButton = false;
+
             foreach(string[] infos in tableau)
             {
                 var button = new Button();
@@ -630,8 +632,22 @@ namespace Vue
                 button.Text = infos[0];
                 button.Tag = infos[1];
 
+                if(infos[1] == lastGeneratedButtonTag)
+                {
+                    stillButton = true;
+                }
 
                 tableLayoutPanel2.Controls.Add(button);
+            }
+
+            if(stillButton == true)
+            {
+                UpdateLabel(lastGeneratedButtonTag);
+            }
+            else
+            {
+                label1.Text = "";
+                lastGeneratedButtonTag = "";
             }
         }
 
@@ -677,10 +693,16 @@ namespace Vue
         private void boutonClient_click(object sender, EventArgs e)
         {
             //label1.Text = tablabel[1, 1] + "\n" + tablabel[0,0];
-            List<String[]> infos = world.GenerateInfosElement(Int32.Parse((sender as Button).Tag.ToString()));
+            UpdateLabel((sender as Button).Tag.ToString());
+            lastGeneratedButtonTag = (sender as Button).Tag.ToString();
+        }
+
+        private void UpdateLabel(string tag)
+        {
+            List<String[]> infos = world.GenerateInfosElement(Int32.Parse(tag));
             string textToPrint = "";
 
-            foreach(String[] info in infos)
+            foreach (String[] info in infos)
             {
                 textToPrint += info[0] + " : " + info[1] + "\n";
             }
@@ -728,6 +750,16 @@ namespace Vue
                 world.SetPause(false);
                 (sender as Button).Text = "PLAY";
             }
+        }
+
+        public void RefreshAll()
+        {
+            RefreshLastClickedElement();
+        }
+
+        public void RefreshAllEvent()
+        {
+            this.Invoke(new MethodInvoker(delegate{ RefreshAll(); }));
         }
     }
 }

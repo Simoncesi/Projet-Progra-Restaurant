@@ -160,7 +160,16 @@ namespace Controller
             infosToReturn.Add(new string[] { "Etat", etat });
             infosToReturn.Add(new string[] { "Modificateur de temps", attente.ToString() });
             infosToReturn.Add(new string[] { "Table donnée", tableDonnee.ToString() });
-            infosToReturn.Add(new string[] { "Menu choisi", menuChoisi[0]+" "+menuChoisi[1]+" "+menuChoisi[2] });
+
+            if(menuChoisi != null)
+            {
+                infosToReturn.Add(new string[] { "Menu choisi", menuChoisi[0] + " " + menuChoisi[1] + " " + menuChoisi[2] });
+            }
+            else
+            {
+                infosToReturn.Add(new string[] { "Menu choisi", "Aucun" });
+            }
+
             infosToReturn.Add(new string[] { "Etape du repas", repasEtape });
             infosToReturn.Add(new string[] { "Countdown attente", attenteCountDown.ToString() });
 

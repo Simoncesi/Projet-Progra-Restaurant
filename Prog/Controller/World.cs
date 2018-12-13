@@ -39,6 +39,11 @@ namespace Controller
             return loader;
         }
 
+        public Core GetCore()
+        {
+            return core;
+        }
+
         public TableEntity GetTableEntity(int[] position)
         {
             if(position[0] < width && position[1] < height)

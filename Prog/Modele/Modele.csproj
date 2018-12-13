@@ -44,5 +44,11 @@
     <Compile Include="BDDLink.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsFormsApp1\Vue.csproj">
+      <Project>{78ef60b3-6510-4a7c-acae-eced9521ab90}</Project>
+      <Name>Vue</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
