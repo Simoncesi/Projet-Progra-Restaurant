@@ -452,7 +452,7 @@ namespace Controller
                         }
                         else
                         {
-                            Console.WriteLine("Serveur " + id + "a prit plats pour table " + targetTable.GetNumTable());
+                            Console.WriteLine("Serveur " + id + " a prit plats pour table " + targetTable.GetNumTable());
                             foreach(Client client in targetTable.GetClients())
                             {
                                 inventaire.Add(comptoir.stockPlats.TakeContent(comptoir.stockPlats.FindContent(new Predicate<object>(o => ((Plat)o).nomPlat == client.GetPlatAttente()))));

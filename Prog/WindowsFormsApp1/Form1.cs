@@ -605,7 +605,6 @@ namespace Vue
 
         private void BoutonClick(string tag)
         {
-            Console.WriteLine(lastUsedTag);
             lastUsedTag = Int32.Parse(tag);
             generateButton(world.GetTableContent(lastUsedTag));
         }
