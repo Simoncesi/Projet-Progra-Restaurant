@@ -19,6 +19,7 @@ namespace Controller
             world.InstantiateHall(hall[0], hall[1], new int[] { hall[2], hall[3] });
             world.InstantiateComptoir(comptoir[0], comptoir[1], new int[] { comptoir[2], comptoir[3] }, new int[] { comptoir[4], comptoir[5] }, new int[] { comptoir[6], comptoir[7] });
 
+            //Menu de test
             List<List<String>> menu = new List<List<string>>()
             {
                 new List<String>{
