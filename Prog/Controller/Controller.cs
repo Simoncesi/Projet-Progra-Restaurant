@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//Instancie l'ensemble du world pour que tout soit prêt
 namespace Controller
 {
     public class Controller

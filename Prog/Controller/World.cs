@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Controller
 {
+    //Le world dans lequel l'ensemble des entités vont évoluer. Il s'agit d'un tableau de dimensions données, chaque case étant une coordonnée et étant un TableEntity
     public class World
     {
         protected int width;
@@ -34,16 +35,19 @@ namespace Controller
             FillTable(table);
         }
 
+        //Retourne le loader
         public Loader GetLoader()
         {
             return loader;
         }
 
+        //Retourne le core
         public Core GetCore()
         {
             return core;
         }
 
+        //Renvois la TableEntity correspondant aux coordonnés données
         public TableEntity GetTableEntity(int[] position)
         {
             if(position[0] < width && position[1] < height)
@@ -57,6 +61,7 @@ namespace Controller
             
         }
 
+        //Instancie la cuisine
         public Cuisine InstantiateCuisine(int width, int height, int[] position)
         {
             SetSalle(width, height, position, "Cuisine");
@@ -64,6 +69,7 @@ namespace Controller
             return cuisine;
         }
 
+        //Instancie le restaurant
         public Restaurant InstantiateRestaurant(int width, int height, int[] position)
         {
             SetSalle(width, height, position, "Restaurant");
@@ -71,6 +77,7 @@ namespace Controller
             return restaurant;
         }
 
+        //Instancie le comptoir
         public Comptoir InstantiateComptoir(int width, int height, int[] position, int[] pointAccesRestaurant, int[] pointAccesCuisine)
         {
             SetSalle(width, height, position, "Comptoir");
@@ -78,6 +85,7 @@ namespace Controller
             return comptoir;
         }
 
+        //Instancie le Hall
         public Hall InstantiateHall(int width, int height, int[] position)
         {
             SetSalle(width, height, position, "Hall");
@@ -85,26 +93,31 @@ namespace Controller
             return hall;
         }
 
+        //Retourne la cuisine
         public Cuisine getCuisine()
         {
             return cuisine;
         }
 
+        //Retourne le restaurant
         public Restaurant getRestaurant()
         {
             return restaurant;
         }
 
+        //Retourne le hall
         public Hall getHall()
         {
             return hall;
         }
 
+        //Retourne le comptoir
         public Comptoir GetComptoir()
         {
             return comptoir;
         }
 
+        //Fonction appelée lorsqu'une des salle est instanciée pour définir le type de salle à ses coordonnées (définis le typesalle des TableEntity)
         private void SetSalle(int width, int height, int[] position, string typeSalle)
         {
             for(int x = position[0]; x < (width + position[0]); x++)
@@ -116,6 +129,7 @@ namespace Controller
             }
         }
 
+        //remplis le tableau du world de TableEntity (les instancie)
         private void FillTable(TableEntity[,] table)
         {
             for (int x = 0; x < table.GetLength(0); x++)
@@ -127,6 +141,7 @@ namespace Controller
             }
         }
 
+        //Génère une vue du tableau du world pour une vue (utilisé lors du débug)
         public string[,] GenerateGridView()
         {
             string[,] stringTable = new string[this.table.GetLength(0), this.table.GetLength(1)];
@@ -142,11 +157,13 @@ namespace Controller
             return stringTable;
         }
 
+        //Fonction appelée par la vue qui retourne les informations données d'un élément précisé par son ID
         public List<string[]> GenerateInfosElement(int id)
         {
             return FindElementInWorld(id).ReturnInformations();
         }
 
+        //Retourne un élément à partir de son ID
         public Entity FindElementInWorld(int id)
         {
             for(int i = 0; i < width;i++)
@@ -164,6 +181,7 @@ namespace Controller
             return null;
         }
 
+        //Renvois l'ensemble des éléments (sous forme de "type + ID") contenus dans la même case qu'un table (pour la vue)
         public List<String[]> GetTableContent(int tableId)
         {
             List<Object> entities = GetTableEntity(restaurant.GetTable(tableId).GetPosition()).GetAllEntities();
@@ -179,17 +197,20 @@ namespace Controller
             return formatEntites;
         }
 
+        //Change la vitesse (appelé par la vue)
         public void SetSpeedUp(bool speed)
         {
             core.SetSpeed(speed);
         }
 
+        //Met l'application en pause (appelé par la vue)
         public void SetPause(bool pause)
         {
             core.Pause(pause);
         }
     }
 
+    //Classe abstraite implémentée par toutes les salles (cuisine, restaurant...)
     public abstract class Salle
     {
         public int width;
@@ -216,9 +237,10 @@ namespace Controller
         }
     }
 
+    //Classe cuisine (la cuisine)
     public class Cuisine : Salle
     {
-
+        //La cuisine n'étant pas implémentée (soucis de temps), la classe n'est pas complète
         public Cuisine():base() { }
 
         public Cuisine(int width, int height, int[] position, World world):base(width, height, position, world)
@@ -232,6 +254,7 @@ namespace Controller
         }
     }
 
+    //Classe restaurant (Salle principale, contenant les tables, et dans laquelle naviguent les chefs de rang et les serveurs)
     public class Restaurant : Salle
     {
         private int tableIdCount;
@@ -245,6 +268,7 @@ namespace Controller
             tables = new List<Table>();
         }
 
+        //Génération des tables à partir d'une liste de coordonnées donnée
         public void GenerateTables(List<int[]> positions)
         {
             foreach(int[] pos in positions)
@@ -261,11 +285,13 @@ namespace Controller
             }
         }
 
+        //Retourne toutes les tables présentes
         public List<Table> GetAllTables()
         {
             return tables;
         }
 
+        //Retourne toutes les tables vides présentes
         public List<Table>GetEmptyTables()
         {
             List<Table> emptyTables = new List<Table>();
@@ -280,6 +306,7 @@ namespace Controller
             return emptyTables;
         }
 
+        //Retourne toutes les tables contenant des clients présentes
         public List<Table>GetFilledTables()
         {
             List<Table> filledTables = new List<Table>();
@@ -294,6 +321,7 @@ namespace Controller
             return filledTables;
         }
 
+        //Retourne toutes les tables réservées
         public List<Table>GetReservedTables()
         {
             List<Table> reservedTables = new List<Table>();
@@ -308,12 +336,14 @@ namespace Controller
             return reservedTables;
         }
 
+        //Retourne une table à partir de son TableId (ID propre aux tables)
         public Table GetTable(int tableId)
         {
             return tables.Find(t => t.GetNumTable() == tableId);
         }
     }
 
+    //Classe comproit (élément de stockage faisant office de transition entre le restaurant et la cuisine)
     public class Comptoir : Salle
     {
         private int[] pointAccesRestaurant;
@@ -351,26 +381,31 @@ namespace Controller
             }
         }
 
+        //Retourne les coordonnées du point d'accès au comptoir du restaurant
         public int[] GetPointAccesRestaurant()
         {
             return pointAccesRestaurant;
         }
 
+        //retourne les coordonnées du point d'accès au comptoir de la cuisine
         public int[] GetPointAccesCuisine()
         {
             return pointAccesCuisine;
         }
 
+        //Charge la carte des menus du restaurant (qui peut changer en fonction des aliments manquants)
         public void LoadCarte(Carte carte)
         {
             this.carte = carte;
         }
 
+        //Retourne la carte des menus
         public Carte GetCarte()
         {
             return carte;
         }
 
+        //retourne un plat en fonction de son nom si celui-ci est présent dans le stock est plats (si la cuisine l'a préparé et déposé dans le comptoir)
         public Plat GetPlat(string plat)
         {
             List<Object> platsEnStock = stockPlats.GetContent();
@@ -388,6 +423,7 @@ namespace Controller
             return null;
         }
 
+        //Retourne un bool confirmant si oui ou non le comptoir contiens le plat demandé
         public bool HasPlat(string plat)
         {
             List<Object> platsEnStock = stockPlats.GetContent();
@@ -405,12 +441,14 @@ namespace Controller
             return false;
         }
 
+        //Fonction d'ajout de commande au stock des commandes (qui seront récupérées par la cuisine pour les préparer)
         public void AddCommande(List<List<String>> commande)
         {
             stockCommandes.AddContent(commande);
             GeneratePlat();
         }
 
+        //Fonction de conversion de commandes en plats, pour simuler la cuisine le temps que cette dernière soit implémentée
         public void GeneratePlat()
         {
             foreach(List<List<String>> commandeListe in stockCommandes.GetContent())
@@ -426,6 +464,7 @@ namespace Controller
         }
     }
 
+    //Le Hall est le hall d'entrée, dans lequel se situe le maître d'hôtel et où les clients vont arriver (génération aléatoire)
     public class Hall : Salle
     {
         public Hall() { }
@@ -435,6 +474,7 @@ namespace Controller
 
         }
 
+        //Fonction de génération de clients aléatoire, appelée par le maître d'hôtel
         public List<Client> GenerateClients(Loader loader)
         {
             Console.WriteLine("Génération de clients !");
@@ -443,13 +483,14 @@ namespace Controller
 
             for(int i = 0; i < rnd.Next(1,4); i++)
             {
-                clients.Add(new Client(rnd.Next(30, 100), rnd.Next(0, 10), "Jean", "Albert", rnd.Next(20, 80), this.position, loader));
+                clients.Add(new Client(rnd.Next(30, 100), rnd.Next(1, 4), "Jean", "Albert", rnd.Next(20, 80), this.position, loader));
             }
 
             return clients;
         }
     }
 
+    //Classe TableEntity, classe instanciée dans chaque chaque case tu tableau du world, et qui va contenir les entités présentes dans chaque case
     public class TableEntity
     {
         public string typeSalle;
@@ -460,26 +501,31 @@ namespace Controller
             entities = new List<Object>();
         }
 
+        //Retourne toutes les entités présentes dans cette case (donc cette TableEntity)
         public List<Object> GetAllEntities()
         {
             return entities;
         }
 
+        //Ajoute une entité à la liste des entités présentes dans la case
         public void AddEntity(Entity entity)
         {
             entities.Add(entity);
         }
 
+        //Retire une entité de la liste des entités présentes dans la case
         public bool RemoveEntity(Entity entity)
         {
             return entities.Remove(entity);
         }
 
+        //Retourne toutes les entités présents dans la case d'un certain type donné
         public List<Object> FindEntityByType(string type)
         {
             return entities.FindAll(e => ((Entity)e).GetType().ToString() == type);
         }
 
+        //Retourne si oui ou non la case contiens une entité identifiée par son ID
         public bool HasEntity(int entityID)
         {
             int result = entities.FindIndex(e => ((Entity)e).id == entityID);
@@ -494,6 +540,7 @@ namespace Controller
             }
         }
 
+        //Retourne une entité identifiée par son ID, si elle est présente dans cette case
         public Entity GetEntity(int id)
         {
             return (Entity)entities.Find(e => ((Entity)e).id == id);

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Controller
 {
+    //Classe abstraite d'entité, implémentée par toutes les autres classes étant des entités dans le world (sauf le world même et les salles)
     public abstract class Entity
     {
         public int id;
@@ -18,6 +19,7 @@ namespace Controller
         public abstract List<string[]> ReturnInformations();
     }
 
+    //Classe abstraite d'entité physique, c'est-à-dire une entité physiquement présente dans le world (personnage, table, conteneur...). Cette classe exclus donc tous les objets, qui ne sont pas présents physiquement dans le world mais se trouvent toujours dans un conteneur
     public abstract class PhysicalEntity : Entity
     {
         protected int[] position;
@@ -33,6 +35,7 @@ namespace Controller
         }
     }
 
+    //Classe de conteneur, entité physique ayant un inventaire et pouvant donc contenir d'autres entités
     public abstract class Conteneur : PhysicalEntity
     {
         protected List<Object> contenu;
@@ -76,6 +79,7 @@ namespace Controller
         }
     }
 
+    //Classe de table. Correspond aux tables présentes dans le world
     public class Table : Conteneur
     {
         private int numTable;
@@ -94,6 +98,7 @@ namespace Controller
             this.places = places;
         }
 
+        //Retour d'informations pour la vue
         public override List<string[]> ReturnInformations()
         {
             List<string[]> infosToReturn = new List<string[]>();
@@ -107,32 +112,38 @@ namespace Controller
             return infosToReturn;
         }
 
+        //Retourne le nombre de places totales
         public int GetNombrePlaces()
         {
             return places;
         }
 
+        //Retourne le nombre de places libres
         public int GetPlacesLibres()
         {
             return places - clientsPresents.Count();
         }
 
+        //Retourne si la table est réservée pour des clients par le Maitre d'hôtel ou non
         public bool EstLibre()
         {
             return libre;
         }
 
+        //Ajoute des clients (lorsqu'ils s'aseoient)
         public void AjouterClient(Client client)
         {
             Console.WriteLine("Un client ajouté à la table " + numTable);
             clientsPresents.Add(client);
         }
 
+        //Retire des clients à la liste des clients assis à cette table
         public void RetirerClient(Client client)
         {
             clientsPresents.Remove(client);
         }
 
+        //Appelée par le maître d'hôtel pour la réserver pour des clients qui vont s'y asseoir (pour éviter que le maître d'hôtel attribue deux groupes de clients à une même table)
         public bool Reserver()
         {
             if (libre == false)
@@ -147,6 +158,7 @@ namespace Controller
             }
         }
 
+        //Libère la réservation de la table. Elle n'est plus réservée
         public bool Liberer()
         {
             if (libre == true)
@@ -160,17 +172,20 @@ namespace Controller
             }
         }
 
+        //Ranvois le numéro de la table. C'est un ID propre aux tables
         public int GetNumTable()
         {
             return numTable;
         }
 
+        //Retourne tous les clients assis à cette table
         public List<Client> GetClients()
         {
             return clientsPresents;
         }
     }
 
+    //Classe de stock, c'est-à-dire un conteneur qui stockera une grande quantité d'éléments (frigo, réserve...)
     public class Stock: Conteneur
     {
         public Stock(Loader loader, int[] position) : base(loader, position)

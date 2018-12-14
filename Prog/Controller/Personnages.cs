@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Controller
 {
+    //Classe abstraite qu'implémentent tous les personnages
     public abstract class Personnage : PhysicalEntity
     {
         public string nom;
@@ -14,6 +15,7 @@ namespace Controller
         protected List<Object> inventaire;
         protected Loader loader;
 
+        //Fonction appelée à chaque tic, pour rendre le personnage dynamique
         public abstract void UpdatePersonnage(int delta);
 
         public Personnage(string nom, string prenom, int age, int[] position, Loader loader):base(loader, position)
@@ -28,6 +30,7 @@ namespace Controller
             this.inventaire = new List<Object>();
         }
 
+        //Fonction de déplacement
         public bool MoveTo(int[] position)
         {
             if(loader.GetWorld().GetTableEntity(position) != null)
@@ -44,6 +47,7 @@ namespace Controller
         }
     }
 
+    //Classe Cient
     public class Client: Personnage
     {
         public int attente;
@@ -65,6 +69,7 @@ namespace Controller
             repasEtape = "null";
         }
 
+        //Fonction appelée à chaque tic pour rendre le personnage dynamique, fait changer son état (mange, attends...)
         public override void UpdatePersonnage(int delta)
         {
             switch(etat)
@@ -152,6 +157,7 @@ namespace Controller
             }
         }
 
+        //Fonction de retour d'informations pour la vue
         public override List<string[]> ReturnInformations()
         {
             List<string[]> infosToReturn = new List<string[]>();
@@ -176,17 +182,20 @@ namespace Controller
             return infosToReturn;
         }
 
+        //Fonction pour reçevoir une table, qui sera appelée par le chef de rang
         public void RecevoirTable(Table table)
         {
             this.table = table;
             tableDonnee = true;
         }
 
+        //Fonction pour reçevoir le maître d'hôtel, vers lequel le client repartiras pour payer
         public void RecevoirMaitre(MaitreHotel maitre)
         {
             this.maitre = maitre;
         }
 
+        //Fonction pour s'asseoir à une table
         public bool Sasseoir()
         {
             TableEntity tablentity = loader.GetWorld().GetTableEntity(position);
@@ -209,26 +218,31 @@ namespace Controller
             return false;
         }
 
+        //Fonction pour reçevoir la crate des menus, appelée par le chef de rang
         public void RecieveCarte(Carte carte)
         {
             this.carte = carte;
         }
 
+        //Fonction pour rendre la carte au chef de rang, change l'état du client en attende du repas
         public void GiveBackCarte()
         {
             carte = null;
         }
 
+        //Renvois l'etat du repas du client (entrée, plat, dessert)
         public string GetRepasEtape()
         {
             return repasEtape;
         }
 
+        //Renvois l'état du client (mange, attends, attends menu...)
         public string GetEtat()
         {
             return etat;
         }
 
+        //Renvois le menu choisis par le client
         public List<String> DonnerMenu()
         {
             etat = "attendsRepas";
@@ -236,6 +250,7 @@ namespace Controller
             return menuChoisi;
         }
 
+        //Renvois le plat du menu choisis que le client attends
         public string GetPlatAttente()
         {
             switch (repasEtape)
@@ -252,6 +267,7 @@ namespace Controller
             return null;
         }
 
+        //Le client reçois le plat, change son état en "mange"
         public void RecevoirPlat(Plat plat)
         {
             Console.WriteLine("Client " + id + " a reçus " + plat.nomPlat);
@@ -262,6 +278,7 @@ namespace Controller
             etat = "mange";
         }
 
+        //Le client a finis le plat
         private void FinisPlat()
         {
             plat = null;
@@ -286,6 +303,7 @@ namespace Controller
             }
         }
 
+        //Le client quitte la table
         private void QuitterTable()
         {
             bool tousClientsFinis = true;
@@ -306,6 +324,7 @@ namespace Controller
             }
         }
 
+        //Le client paye le maitre d'hôtel
         private void Payer()
         {
             maitre.QuitClient(this);
@@ -314,6 +333,7 @@ namespace Controller
         }
     }
 
+    //Classe abstraite implémentée par tout personnel de la salle du restaurant
     public abstract class PersonnelSalle: Personnage
     {
         public PersonnelSalle(string nom, string prenom, int age, int[] position, Loader loader) : base(nom, prenom, age, position, loader)
@@ -322,6 +342,7 @@ namespace Controller
         }
     }
 
+    //Classe Maitre Hotel, qui va reçevoir les clients
     public class MaitreHotel: PersonnelSalle
     {
         private int randomCountDown;
@@ -341,6 +362,7 @@ namespace Controller
             this.chefsDeRang = new List<ChefDeRang>();
         }
 
+        //Fonction appelée à chaque tic, rendant le personnage dynamique, dans ce cas cela lui permet de générer des client et de les reçevoir
         public override void UpdatePersonnage(int delta)
         {
             //Console.WriteLine(randomCountDown);
@@ -364,6 +386,7 @@ namespace Controller
             }
         }
 
+        //Fonction de retour d'informations pour la vue
         public override List<string[]> ReturnInformations()
         {
             List<string[]> infosToReturn = new List<string[]>();
@@ -374,11 +397,13 @@ namespace Controller
             return infosToReturn;
         }
 
+        //Ajout d'un chef de rang à la liste des chefs de rang
         public void AddChefDeRang(ChefDeRang chefDeRang)
         {
             chefsDeRang.Add(chefDeRang);
         }
 
+        //Le maitre d'hôtel reçois les clients, c'est-à-dire qu'il cherche les tables libres et leur attribue une table qui contiens assez de place
         private bool RecieveClients(List<Client> clients)
         {
             int quantity = clients.Count();
@@ -400,6 +425,7 @@ namespace Controller
             return false;
         }
 
+        //Appel d'un chef de rang pour diriger un groupe de clients vers une table désignée
         private bool AlertChefDeRang(List<Client> clients, Table table)
         {
             foreach(ChefDeRang chef in chefsDeRang)
@@ -416,6 +442,7 @@ namespace Controller
             return false;
         }
 
+        //Fonction appelée lorsqu'un client pars, pour détruire l'instance client en question
         public void QuitClient(Client client)
         {
             if(client.table.GetPlacesLibres() == client.table.GetNombrePlaces())
@@ -425,6 +452,7 @@ namespace Controller
         }
     }
 
+    //Classe serveur, qui apportera les plats aux clients
     public class Serveur : PersonnelSalle
     {
         private string etat;
@@ -438,6 +466,7 @@ namespace Controller
             comptoir = loader.GetWorld().GetComptoir();
         }
 
+        //Fonction appelée à chaque tic, définis l'état du serveur et permet de vérifier périodiquement l'état des clients pour prendre des décisions en conséquence
         public override void UpdatePersonnage(int delta)
         {
             switch (etat)
@@ -496,6 +525,7 @@ namespace Controller
             }
         }
 
+        //Fonction de retour d'informations pour la vue
         public override List<string[]> ReturnInformations()
         {
             List<string[]> infosToReturn = new List<string[]>();
@@ -508,6 +538,7 @@ namespace Controller
             return infosToReturn;
         }
 
+        //Check de l'état des clients pour chaque table. Permet de savoir quand des clients sont en train d'attendre un plat
         private List<Table> CheckTablesClientsEtat(string etatToCheck)
         {
             List<Table> tablesRemplies = loader.GetWorld().getRestaurant().GetFilledTables();
@@ -533,6 +564,7 @@ namespace Controller
             return tablesCorrespondent;
         }
 
+        //Check les plats que les clients attendent, afin de les apporter si ils la cuisine les a préparés
         private void CheckPlatsClients()
         {
             List<Table> tablesCorrespondent = CheckTablesClientsEtat("attendsRepas");
@@ -566,6 +598,7 @@ namespace Controller
 
     }
 
+    //Classe chef de rang, qui accueille les clients, les amène à une table donnée par le Maitre d'hôtel, leur donne le menu et prends les commmandes
     public class ChefDeRang : PersonnelSalle
     {
         private string etat;
@@ -588,6 +621,7 @@ namespace Controller
             commandes = new List<List<String>>();
         }
 
+        //Fonction appelée à chaque tic
         public override void UpdatePersonnage(int delta)
         {
             switch (etat)
@@ -653,6 +687,7 @@ namespace Controller
             }
         }
 
+        //Fonction de retour d'informations pour la vue
         public override List<string[]> ReturnInformations()
         {
             List<string[]> infosToReturn = new List<string[]>();
@@ -663,6 +698,7 @@ namespace Controller
             return infosToReturn;
         }
 
+        //Fonction d'attente des clients à la table donnée, le temps qu'ils s'y installent
         private void WaitingClients()
         {
             if (attenteClients > 0)
@@ -702,6 +738,7 @@ namespace Controller
             }
         }
 
+        //Fonction pour aller au comptoir, prendre les menus, retourner à la table ciblée et donner les menus aux clients
         private void GettingMenus()
         {
             if (carte == null)
@@ -741,16 +778,19 @@ namespace Controller
             }
         }
 
+        //Fonction d'appel du maître d'hôtel, appelée à la création du chef de rang pour que le maître d'hôtel le prenne en compte
         public void InformMaitreHotel(MaitreHotel maitreHotel)
         {
             maitreHotel.AddChefDeRang(this);
         }
 
+        //Fonction appelée par le Maitre d'hôtel pour ajouter au chef de rang des clients à reçevoir
         public void AddClientsToRecieve(List<Client> clients, Table table)
         {
             clientsToRecieve.Add(new Object[] { clients, table });
         }
 
+        //Fonction de réception des clients
         private void RecieveClients(Object[] clientsTable)
         {
             Table table = (Table)clientsTable[1];
@@ -764,11 +804,13 @@ namespace Controller
             Console.WriteLine("CR " + id + " viens de recevoir des clients pour la table " + table.GetNumTable());
         }
 
+        //Retourne l'état du chef de rang
         public string GetEtat()
         {
             return etat;
         }
 
+        //Récupère la commande des clients à une table donnée
         private void GettingCommande(Table table)
         {
             foreach(Client client in table.GetClients())
@@ -781,6 +823,7 @@ namespace Controller
             etat = "deposeCommande";
         }
 
+        //Donne la commande à la cuisine
         private void GivingCommandeKitchen()
         {
             Console.WriteLine("CR " + id + " a déposé une commande à la cuisine");
@@ -788,6 +831,7 @@ namespace Controller
             etat = "idle";
         }
 
+        //Check l'état des clients à une table donnée
         private List<Table> CheckTablesClientsEtat(string etatToCheck)
         {
             List<Table> tablesRemplies = loader.GetWorld().getRestaurant().GetFilledTables();

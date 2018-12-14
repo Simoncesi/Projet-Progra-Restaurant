@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Controller
 {
+    //Classe abstraite implémentée par tous les objets
     public abstract class Objet: Entity
     {
         private Entity conteneur;
@@ -26,6 +27,7 @@ namespace Controller
         }
     }
 
+    //Classe d'objets divers, n'est exploitée que pour l'argent mais peut être implémentée pour n'importe quel autre objet
     public class Divers: Objet
     {
         public string type;
@@ -49,6 +51,7 @@ namespace Controller
         }
     }
 
+    //Classe de la nourriture
     public class Nourriture: Objet
     {
         public string nom;
@@ -72,6 +75,7 @@ namespace Controller
         }
     }
 
+    //Classe de matériel (élément étant utilisé et pouvant être propre ou sale, comme les couverts, les assiettes, les nappes...)
     public class Materiel: Objet
     {
         private bool propre;
@@ -107,6 +111,7 @@ namespace Controller
         }
     }
 
+    //Classe d'ustensiles (couverts, casseroles...)
     public class Ustensile: Materiel
     {
         public string ustensileType;
@@ -116,6 +121,7 @@ namespace Controller
         }
     }
 
+    //Classe d'objet conteneur, objet qui va contenir d'autres objets (assiette, qui va contenir des aliments...)
     public class ObjetConteneur: Materiel
     {
         //If it can contain solids or liquids
@@ -146,6 +152,7 @@ namespace Controller
         }
     }
 
+    //Classe de Plat, étant une assiette avec des aliments transformée (pour simplifier le code)
     public class Plat: Objet
     {
         private ObjetConteneur platConteneur;
@@ -170,6 +177,7 @@ namespace Controller
         }
     }
 
+    //Classe de la carte, qui contiens tous les menus
     public class Carte: Objet
     {
         private List<List<String>> menus;

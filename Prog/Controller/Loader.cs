@@ -7,6 +7,7 @@ using System.Timers;
 
 namespace Controller
 {
+    //Classe qui est appelée par tout élément instancié, qui donne un ID pour chaque élément et fait office de passerelle
     public class Loader
     {
         private int IDCount;
@@ -36,6 +37,7 @@ namespace Controller
         }
     }
 
+    //Classe faisant fonctionner l'ensemble des personnage, elle appelle pour chaque personnage la fonction d'update personnage à une fréquence régulière (1fois par seconde, 10 fois par seconde)
     public class Core
     {
         private List<Personnage> personnages;
@@ -51,21 +53,25 @@ namespace Controller
             SetTimer();
         }
 
+        //Ajout d'un personnage à mettre à jour
         public void AddPersonnage(Personnage personnage)
         {
             personnages.Add(personnage);
         }
 
+        //Suppression d'un personnage à mettre à jour
         public void DelPersonnage(Personnage personnage)
         {
             personnages.Remove(personnage);
         }
 
+        //Définition du temsp écoulé (ne sert à rien dans ce contexte, puisque le Delta n'est pas exploité)
         public void SetTimeElapsed(int timeElapsed)
         {
             this.timeElapsed = timeElapsed;
         }
 
+        //Mise en pause du timer, et donc de l'ensemble de l'application
         public void Pause(bool pause)
         {
             if(pause==true)
@@ -78,6 +84,7 @@ namespace Controller
             }
         }
 
+        //Création du timer
         private void SetTimer()
         {
             // Create a timer with a two second interval.
@@ -88,6 +95,7 @@ namespace Controller
             aTimer.Enabled = true;
         }
 
+        //Fonction appelée à chaque tic du timer
         private void OnTimedEvent(Object source, ElapsedEventArgs e)
         {
             foreach(Personnage personnage in personnages.ToList())
@@ -101,6 +109,7 @@ namespace Controller
             }
         }
 
+        //Définition de la vitesse (x1, x10), appelée par la vue lorsqu'on change la vitesse
         public void SetSpeed(bool speedUp)
         {
             if(speedUp == true)
@@ -113,6 +122,7 @@ namespace Controller
             }
         }
 
+        //Référence un délégué donné par la vue pour appeler automatiquement le rafraichissement de la vue à chaque tic
         public void setDeleg(Delegate deleg)
         {
             refreshCaller = deleg;
